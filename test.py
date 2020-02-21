@@ -19,11 +19,13 @@ from FactorAnalysis import FactorAnalysis
 #     return M
 
 
-Tensor1 = MDTensor('/home/aghee/PDB/prot_apo_sim1_s10.dcd', '/home/aghee/PDB/prot.prmtop')
-Tensor1.load_tensor('results/apo10_sim1.p')
-A,B,C = Tensor1.factorize(6)
+# Tensor1 = MDTensor('/home/aghee/PDB/prot_apo_sim1_s10.dcd', '/home/aghee/PDB/prot.prmtop')
+# Tensor1.load_tensor('results/apo10_sim1.p')
+Parafac = np.load("results/ABC6.npy", allow_pickle=True)
+A,B,C = Parafac.item()['A'], Parafac.item()['B'], Parafac.item()['C']
 FA = FactorAnalysis(A, B, C)
-FA.plot_activity_pattern('results/activity_pattern.png')
+FA.plot_membership_distribution('results/membership_distribution_6.png')
+FA.plot_activity_pattern('results/activity_pattern_6.png')
 
 
 

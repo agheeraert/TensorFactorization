@@ -21,6 +21,7 @@ class MDTensor():
         self.traj = md.load(trajs, top=topo)
         if discard_hydrogens:
             self.traj = self.discard_hydrogens()
+        print(self.traj)
         self.cutoff = cutoff/10 #conversion in nm
         topo = self.traj.topology.to_dataframe()[0]
         self.atom2res = pd.Series(topo['resSeq'].values, topo.index).to_dict()
@@ -34,7 +35,10 @@ class MDTensor():
                 self.resId2resName[elt] = self.three2one[resId2resName[elt]]+str(elt-253)+':H'
     
     def discard_hydrogens(self):
-        return self.traj #TO DO
+        topo = self.traj.topology.to_dataframe()[0]
+        isH = np.char.startswith(np.array(topo['name'], dtype=str), 'H')
+        indices = np.where(isH==0)[0]
+        return self.traj.restrict_atoms(indices)
 
     def save(self, output):
         pkl.dump(self.tensor, open(output, 'wb'))
@@ -61,9 +65,9 @@ class MDTensor():
 
 if __name__ == '__main__':
     for i  in range(2,5):
-        Tensor1 = MDTensor(['/home/aghee/PDB/prot_apo_sim'+str(i)+'_s10.dcd', '/home/aghee/PDB/prot_prfar_sim'+str(i)+'_s10.dcd'], '/home/aghee/PDB/prot.prmtop')
+        Tensor1 = MDTensor(['/home/aghee/PDB/prot_apo_sim'+str(i)+'_s10.dcd', '/home/aghee/PDB/prot_prfar_sim'+str(i)+'_s10.dcd'], '/home/aghee/PDB/prot.prmtop', discard_hydrogens=True)
         Tensor1.create_tensor()
-        Tensor1.save('results/sim'+str(i)+'.p')
+        Tensor1.save('results/noH/sim'+str(i)+'.p')
         del Tensor1
     # Tensor1 = MDTensor(['/home/aghee/PDB/prot_apo_sim1_s10.dcd', '/home/aghee/PDB/prot_prfar_sim1_s10.dcd'], '/home/aghee/PDB/prot.prmtop')
     # Tensor1.load_tensor('results/sim1.p')

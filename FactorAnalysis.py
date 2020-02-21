@@ -43,7 +43,7 @@ class FactorAnalysis():
     def plot_membership_distribution(self, output):
         f = plt.figure()
         for component in range(self.R):
-            plt.subplot(self.R//3,3,component+1)
+            plt.subplot(self.R//3+1-(self.R%3==0),3,component+1)
             plt.title('Component '+str(component+1))
             plt.hist(self.A[:,component], color='k', log=True)
             plt.xlabel('Level of membership')
@@ -60,7 +60,7 @@ class FactorAnalysis():
         S = self.activity_pattern()
         f= plt.figure()
         for component in range(self.R):
-            plt.subplot(self.R//3,3,component+1)
+            plt.subplot(self.R//3+1-(self.R%3==0),3,component+1)
             plt.title('Component '+str(component+1))
             plt.plot(S[:,component], color='k')
             plt.xlabel('Time (ns)')
