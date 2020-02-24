@@ -17,11 +17,11 @@ for fichier in args.f:
         output = fichier+'.png'
     best5 = np.sort(table, axis=-1)[:,-5:]
     f = plt.figure()
-    plt.plot(range(2,13), np.mean(best5, axis=-1), color='k')
+    plt.plot(range(2,best5.shape[0]+2), np.mean(best5, axis=-1), color='k')
     for i in range(5):
-        plt.scatter(range(2,13), best5[:,i], marker='+', color='g')
+        plt.scatter(range(2,best5.shape[0]+2), best5[:,i], marker='+', color='g')
     plt.xlabel("Number of components")
     plt.ylabel("core consistency (%)")
     plt.ylim(0,100)
-    plt.savefig("results/coreconsistency.png")
+    plt.savefig(output)
 
