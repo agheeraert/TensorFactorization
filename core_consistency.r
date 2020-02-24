@@ -2,8 +2,8 @@ library(multiway)
 library(reticulate)
 use_python("/home/aghee/anaconda3/bin/python")
 np <- import("numpy")
-X = np$load('results/apo_sim1.npy')
-cmin = 13
+X = np$load('results/noH/apo_sim1.npy')
+cmin = 9
 cmax = 20
 nstart = 20
 
@@ -23,5 +23,5 @@ for (R in cmin:cmax){
 # type="l",
 # ylim=c(0,100))
 # dev.off()
-np$save("results/cc.npy", cc)
+np$save("results/noH/cc.npy", cc)
 

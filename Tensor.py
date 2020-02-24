@@ -64,7 +64,7 @@ class MDTensor():
 
 
 if __name__ == '__main__':
-    for i  in range(2,5):
+    for i  in range(1,2):
         Tensor1 = MDTensor(['/home/aghee/PDB/prot_apo_sim'+str(i)+'_s10.dcd', '/home/aghee/PDB/prot_prfar_sim'+str(i)+'_s10.dcd'], '/home/aghee/PDB/prot.prmtop', discard_hydrogens=True)
         Tensor1.create_tensor()
         Tensor1.save('results/noH/sim'+str(i)+'.p')
