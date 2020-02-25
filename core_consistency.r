@@ -3,7 +3,7 @@ library(reticulate)
 use_python("/home/aghee/anaconda3/bin/python")
 np <- import("numpy")
 X = np$load('results/noH/apo_sim1.npy')
-cmin = 9
+cmin = 12
 cmax = 20
 nstart = 20
 
