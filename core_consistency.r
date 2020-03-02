@@ -2,9 +2,9 @@ library(multiway)
 library(reticulate)
 use_python("/home/aghee/anaconda3/bin/python")
 np <- import("numpy")
-X = np$load('results/noH/apo_sim1.npy')
-cmin = 19
-cmax = 20
+X = np$load('results/noH10/mean10_round.npy')
+cmin = 21
+cmax = 40
 nstart = 20
 
 cc <- matrix(0, cmax-cmin+1, nstart)
@@ -23,5 +23,5 @@ for (R in cmin:cmax){
 # type="l",
 # ylim=c(0,100))
 # dev.off()
-np$save("results/noH/cc.npy", cc)
+np$save("results/noH10/ccmean_round_2.npy", cc)
 
