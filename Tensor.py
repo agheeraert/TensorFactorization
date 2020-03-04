@@ -9,10 +9,10 @@ from scipy.spatial.distance import pdist, squareform
 from collections import OrderedDict
 from Bio.PDB.Polypeptide import aa1, aa3
 import networkx as nx
-import tensorly.decomposition as td
-from tensorly.tucker_tensor import tucker_to_tensor
-from sktensor import dtensor, cp_als
-from tensorly import to_numpy as tn
+# import tensorly.decomposition as td
+# from tensorly.tucker_tensor import tucker_to_tensor
+# from sktensor import dtensor, cp_als
+# from tensorly import to_numpy as tn
 
 class MDTensor():
     def __init__(self, trajs, topo, cutoff=5, discard_hydrogens=False):

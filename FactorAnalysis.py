@@ -41,7 +41,7 @@ class FactorAnalysis():
         self.resId2resName = pkl.load(open(path, "rb"))
 
     def plot_membership_distribution(self, output):
-        f = plt.figure()
+        f = plt.figure(figsize=[6.4,2.13*(self.R//3)])
         for component in range(self.R):
             plt.subplot(self.R//3+1-(self.R%3==0),3,component+1)
             plt.title('Component '+str(component+1))
@@ -58,7 +58,7 @@ class FactorAnalysis():
     
     def plot_activity_pattern(self, output):
         S = self.activity_pattern()
-        f= plt.figure()
+        f= plt.figure(figsize=[6.4,2.13*(self.R//3)])
         for component in range(self.R):
             plt.subplot(self.R//3+1-(self.R%3==0),3,component+1)
             plt.title('Component '+str(component+1))
@@ -69,3 +69,18 @@ class FactorAnalysis():
         plt.tight_layout()
         plt.savefig(output)
         plt.close()                    
+    def single_component_analysis(self, component_id, threshold):
+        indexes = np.where(self.A[:,component_id] >= threshold)
+        return indexes, np.vectorize(self.resId2resName.get)(indexes)
+
+    def membership_diagram(self, indexes, output):
+        n_compo = len(indexes)
+        plotmat = np.zeros((self.N, n_compo*10))
+        for i, index in enumerate(indexes):
+            plotmat[index, i*10:(i+1)*10] = 1
+        f = plt.figure()
+        plt.imshow(plotmat, cmap='binary', aspect='auto')
+        plt.plot(range(n_compo*10), [252.5]*n_compo*10, linestyle='--', linewidth=1, color='k')
+        plt.yticks(list(range(50,253,50))+list(range(303,454,50)),list(range(50,253,50))+list(range(50,201,50)))
+        plt.xticks(range(0,n_compo*10,10), range(1, n_compo+1), ha='left')
+        plt.savefig(output)
