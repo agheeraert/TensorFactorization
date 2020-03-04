@@ -10,6 +10,7 @@ from collections import OrderedDict
 from Bio.PDB.Polypeptide import aa1, aa3
 import networkx as nx
 import seaborn as sns
+from matplotlib.patches import Rectangle
 
 
 class FactorAnalysis():
@@ -75,12 +76,24 @@ class FactorAnalysis():
 
     def membership_diagram(self, indexes, output):
         n_compo = len(indexes)
+        def _draw(a, b, H=False):
+            rect = Rectangle((0, a+int(H)*253), n_compo*10, b-a, color='b', alpha=0.5)
+            plt.gca().add_patch(rect)
+             
         plotmat = np.zeros((self.N, n_compo*10))
         for i, index in enumerate(indexes):
             plotmat[index, i*10:(i+1)*10] = 1
         f = plt.figure()
         plt.imshow(plotmat, cmap='binary', aspect='auto')
         plt.plot(range(n_compo*10), [252.5]*n_compo*10, linestyle='--', linewidth=1, color='k')
+        _draw(15,29)
+        _draw(59, 74)
+        _draw(91,95)
+        _draw(224, 234)
+        _draw(9, 18, H=True)
+        _draw(49,52, H=True)
+        plt.ylim(0,454)
+        plt.xlim(0, n_compo*10)
         plt.yticks(list(range(50,253,50))+list(range(303,454,50)),list(range(50,253,50))+list(range(50,201,50)))
         plt.xticks(range(0,n_compo*10,10), range(1, n_compo+1), ha='left')
         plt.savefig(output)
