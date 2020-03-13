@@ -4,6 +4,7 @@ from tqdm import tqdm
 import pickle as pkl
 import matplotlib.pyplot as plt
 import pandas as pd
+import itertools
 from os.path import join as jn
 from scipy.spatial.distance import pdist, squareform
 from collections import OrderedDict
@@ -20,6 +21,11 @@ class FactorAnalysis():
         self.T = C.shape[0]
         self.A = A
         self.C = C
+        self.colors = itertools.cycle((0, 1, 9, 11))
+
+    def reorder(self, index_path):
+        perm = np.load(index_path)
+        self.A[perm] = self.A
     
     def create_labels(self, trajs, topo):
         traj = md.load(trajs, top=topo)
@@ -69,7 +75,8 @@ class FactorAnalysis():
                 plt.ylabel('Strength')
         plt.tight_layout()
         plt.savefig(output)
-        plt.close()                    
+        plt.close()
+
     def single_component_analysis(self, component_id, threshold):
         indexes = np.where(self.A[:,component_id] >= threshold)
         return indexes, np.vectorize(self.resId2resName.get)(indexes)
@@ -97,3 +104,29 @@ class FactorAnalysis():
         plt.yticks(list(range(50,253,50))+list(range(303,454,50)),list(range(50,253,50))+list(range(50,201,50)))
         plt.xticks(range(0,n_compo*10,10), range(1, n_compo+1), ha='left')
         plt.savefig(output)
+    
+    def components_to_vmd(self, indexes, output, pdb="/home/aghee/PDB/base_IGPS.pdb"):
+        assert ".tcl" in output, "Output must be in .tcl"
+        n_compo = len(indexes)
+        with open(output, "w") as out:
+            out.write("mol new "+pdb+"\n")
+            out.write("""axes location off
+color Display Background white 
+mol delrep 0 top 
+mol representation Cartoon
+mol color ColorID 12
+mol selection {chain H}
+mol addrep top 
+mol representation Cartoon
+mol color ColorID 4
+mol selection {chain F}
+mol addrep top\n""")
+
+            for fichier in range(n_compo):
+                color = next(self.colors)
+                out.write("""mol representation VDW 1.5
+mol color ColorID """+str(color)+""" Transparent
+mol selection {residue""")
+                out.write(str(*indexes[fichier]).replace("[", "").replace("]", "").replace("  ", " "))
+                out.write("""}
+mol addrep top\n""")

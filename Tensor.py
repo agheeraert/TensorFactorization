@@ -59,10 +59,12 @@ class MDTensor():
         self.tensor = pkl.load(open(file, "rb"))
 
 class Tensor():
-    def __init__(self, paths, window):
+    def __init__(self, paths):
         self.tensor = np.concatenate([np.load(path) for path in paths], axis=-1)
         self.n_nodes = self.tensor.shape[0]
         self.n_frames = self.tensor.shape[-1]
+
+    def set_window(self, window):
         self.window = window
 
     def shuffle(self, output):
@@ -70,6 +72,8 @@ class Tensor():
         self.tensor = self.tensor[perm]
         self.tensor = self.tensor[:,perm]
         np.save(output, self.tensor)
+        assert '.npy' in output, 'Output must be in .npy format' 
+        np.save(output.replace('.npy', '_index.npy'), perm)
 
     def _mean(self, tensor):
         return np.round(np.mean(tensor.reshape(self.n_nodes, self.n_nodes, -1, self.window), axis=-1))
@@ -80,13 +84,13 @@ class Tensor():
     def decmean(self, output):
         mean = self._mean(self.tensor)
         mean5 = self._mean(np.roll(self.tensor, self.window//2))
-        decmean = np.zeros(self.n_nodes, self.n_nodes, self.n_frames//self.window*2)
+        decmean = np.zeros((self.n_nodes, self.n_nodes, self.n_frames//self.window*2))
         decmean[:,:,::2] = mean
         decmean[:,:,1::2] = mean5
         np.save(output, decmean)
     
     def rollmean(self, output):
-        roll = np.zeros(self.n_nodes, self.n_nodes, self.n_frames)
+        roll = np.zeros((self.n_nodes, self.n_nodes, self.n_frames))
         arrays = [self._mean(np.roll(self.tensor, i)) for i in range(self.window)]
         for j, elt in enumerate(arrays):
             for i in range(self.n_frames//self.window):
@@ -98,6 +102,7 @@ class Tensor():
         self.mean(jn(folder, 'mean.npy'))
         self.decmean(jn(folder, 'decmean.npy'))
         self.rollmean(jn(folder, 'rollmean.npy'))
+
 
 if __name__ == '__main__':
     for i  in range(1,2):

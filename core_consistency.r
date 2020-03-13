@@ -2,7 +2,7 @@ library(multiway)
 library(reticulate)
 use_python("/home/aghee/anaconda3/bin/python")
 np <- import("numpy")
-X = np$load('results/noH10/rolling_mean.npy')
+X = np$load('results/sim1/mean.npy')
 cmin = 2
 cmax = 40
 nstart = 20
@@ -23,5 +23,5 @@ for (R in cmin:cmax){
 # type="l",
 # ylim=c(0,100))
 # dev.off()
-np$save("results/noH10/cc_rolling_mean.npy", cc)
+np$save("results/sim1/ccmean.npy", cc)
 

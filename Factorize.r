@@ -2,13 +2,13 @@ library(multiway)
 library(reticulate)
 use_python("/home/aghee/anaconda3/bin/python")
 np <- import("numpy")
-X = np$load('results/noH10/mean_decal.npy')
+X = np$load('results/sim1/mean.npy')
 cmin = 8
 cmax = 25
 
 for (R in cmin:cmax){
     pfac <- parafac(X,nfac=R,nstart=20, const = c("nonneg", "nonneg", "nonneg"), output="best")
-    np$save(paste0("results/noH10/ABC_decal", R, ".npy"), pfac)
+    np$save(paste0("results/sim1/ABCmean_", R, ".npy"), pfac)
 }
 
 # jpeg("results/core_consistency.jpg", width = 350, height = 350)
