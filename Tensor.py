@@ -5,9 +5,11 @@ import pickle as pkl
 import matplotlib.pyplot as plt
 import pandas as pd
 from os.path import join as jn
+from os import listdir
 from scipy.spatial.distance import pdist, squareform
 from collections import OrderedDict
 from Bio.PDB.Polypeptide import aa1, aa3
+from Bio.PDB import PDBParser
 import networkx as nx
 import biographs as bg
 
@@ -79,9 +81,10 @@ class MDTensor():
         self.cutoff = cutoff
         self.three2one = three2one
         self.one2three = one2three 
+        self.id2name = None
         self.create_tensor()
 
-    def create_id2name(self):
+    def create_id2name(self, pdb):
         mol = bg.Pmolecule(pdb)
         net = mol.network(cutoff=self.cutoff)
         self.structure = PDBParser().get_structure('X', pdb)[0]
@@ -92,11 +95,11 @@ class MDTensor():
         labels = [a+b[1:]+':'+b[0] for a,b in zip(residues, old_labels)]
         self.id2name = dict(zip(old_labels, labels))
     
-    def create_tensor(self, folder):
+    def create_tensor(self):
         net = None
         L_adjacency = []
-        for filepath in tqdm(listdir(folder)):
-            L_adjacency.append(self.create_adj(filepath))
+        for filepath in tqdm(sorted(listdir(self.folder))):
+            L_adjacency.append(self.create_adj(jn(self.folder, filepath)))
         self.tensor = np.stack(L_adjacency, axis=-1)
 
     def create_adj(self, pdb):

@@ -12,7 +12,7 @@ parser.add_argument('-o', type=str, nargs='+',
                     help='List of output names')
 args = parser.parse_args()
 
-assert args.d == args.o, 'Number of folder and output names must be the same'
+assert len(args.d) == len(args.o), 'Number of folder and output names must be the same'
 
 for output, folder in zip(args.o, args.d):
     ts = MDTensor(folder)
